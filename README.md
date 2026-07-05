@@ -41,6 +41,31 @@ FLUSH PRIVILEGES;
 ```
 
 
+Dockerfile-slave:
+```
+FROM mysql:8.0
+COPY ./slave.cnf /etc/mysql/conf.d/my.cnf
+COPY ./slave.sql /docker-entrypoint-initdb.d/start.sql
+ENV MYSQL_ROOT_PASSWORD=12345
+CMD ["mysqld"]
+```
+slave.conf
+```
+[mysqld]
+server-id = 2
+read-only = 1
+```
+slave.sql
+```
+CHANGE REPLICATION SOURCE TO
+SOURCE_HOST='mysql_master',
+SOURCE_USER='repl',
+SOURCE_PASSWORD='slavepass',
+SOURCE_SSL=1;
+START REPLICA;
+```
+
+![replica_master_slave](screenshots/1.png)
 
 
 
