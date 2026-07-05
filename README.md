@@ -18,6 +18,30 @@
 
 ### Решение
 
+Dockerfile-master:
+```
+FROM mysql:8.0
+COPY ./master.cnf /etc/mysql/conf.d/my.cnf
+COPY ./master.sql /docker-entrypoint-initdb.d/start.sql
+ENV MYSQL_ROOT_PASSWORD=12345
+CMD ["mysqld"]
+```
+master.conf
+```
+[mysqld]
+server-id=1
+log-bin = mysql-bin
+binlog_format=ROW
+```
+master.sql
+```
+CREATE USER 'repl'@'%' IDENTIFIED BY 'slavepass';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+FLUSH PRIVILEGES;
+```
+
+
+
 
 
 ### Задание 3*
